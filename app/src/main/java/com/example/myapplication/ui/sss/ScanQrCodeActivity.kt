@@ -35,7 +35,7 @@ import retrofit2.Response
 
 class ScanQrCodeActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     private lateinit var binding: ActivityScanQrCodeBinding
-    private var isScanningEnabled = true // Flag to control scanning
+    private var isScanningEnabled = true
 
     companion object {
         private const val MY_CAMERA_REQUEST_CODE = 6515
@@ -112,14 +112,14 @@ class ScanQrCodeActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
             in Constants.DAY_3_START_TIME..Constants.DAY_3_END_TIME -> Constants.DAY_3
             in Constants.DAY_4_START_TIME..Constants.DAY_4_END_TIME -> Constants.DAY_4
             in Constants.DAY_5_START_TIME..Constants.DAY_5_END_TIME -> Constants.DAY_5
-            else -> "day1"
+            else -> ""
         }
 
 
-        if (day.isNullOrBlank()) {
+        if (day.isBlank()) {
                 Toast.makeText(
                     this@ScanQrCodeActivity,
-                    "Pyrexia 2024 kicks off on Oct 10, 4 PM! Get ready!",
+                    "Entry will start from 4 PM Onwards!",
                     Toast.LENGTH_SHORT
                 ).show()
             } else {

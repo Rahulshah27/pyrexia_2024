@@ -13,6 +13,9 @@ object Constants {
     const val DAY_4_START_TIME = 1728815400
     const val DAY_5_START_TIME = 1728901800
 
+//    const val TEST_START = 1728244800
+//    const val TEST_END = 1728245700
+
     const val DAY_1_END_TIME = 1728592200
     const val DAY_2_END_TIME = 1728678600
     const val DAY_3_END_TIME = 1728765000
