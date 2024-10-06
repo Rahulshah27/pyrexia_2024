@@ -72,22 +72,20 @@ fun addTextBelowQRCode(
 }
 
 fun saveQRCodeToPyrexiaFolder(bitmap: Bitmap, registrationNumber: String) {
-    val downloadsPath =
-        Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+    val downloadsPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
     val pyrexiaFolder = File(downloadsPath, "Pyrexia_2024")
 
-    // Check if the directory exists, if not, create it
+    // Check if the directory exists; if not, create it
     if (!pyrexiaFolder.exists()) {
-        val wasDirectoryCreated =
-            pyrexiaFolder.mkdirs() // Create the directory if it doesn't exist
+        val wasDirectoryCreated = pyrexiaFolder.mkdirs() // Create the directory if it doesn't exist
         if (!wasDirectoryCreated) {
             Log.e("QRCodeWorker", "Failed to create directory: ${pyrexiaFolder.absolutePath}")
             return
         }
     }
 
-    // Create a file for the QR code
-    val file = File(pyrexiaFolder, "$registrationNumber-QRCode.png")
+    // Generate a unique file name
+    val file = getUniqueFileName(pyrexiaFolder, registrationNumber)
 
     var outputStream: OutputStream? = null
     try {
@@ -100,5 +98,20 @@ fun saveQRCodeToPyrexiaFolder(bitmap: Bitmap, registrationNumber: String) {
         outputStream?.close()
     }
 }
+
+fun getUniqueFileName(directory: File, baseName: String): File {
+    var fileName = "$baseName-QRCode.png"
+    var file = File(directory, fileName)
+    var counter = 1
+
+    // Check if the file already exists and modify the name accordingly
+    while (file.exists()) {
+        fileName = "$baseName-QRCode-$counter.png"
+        file = File(directory, fileName)
+        counter++
+    }
+    return file
+}
+
 
 

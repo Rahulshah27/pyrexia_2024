@@ -24,7 +24,7 @@ import retrofit2.Response
 
 
 class GenerateQrCodeActivity : AppCompatActivity() {
-    lateinit var binding: ActivityGenerateQrCodeBinding
+    private lateinit var binding: ActivityGenerateQrCodeBinding
 
     companion object {
         fun getGenerateQrCodeActivity(callingClassContext: Context) =
