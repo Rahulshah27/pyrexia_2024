@@ -98,6 +98,7 @@ class GenerateQrCodeActivity : AppCompatActivity() {
         jsonObject.addProperty("day3", "Absent")
         jsonObject.addProperty("day4", "Absent")
         jsonObject.addProperty("day5", "Absent")
+        jsonObject.addProperty("isActive", "inActive")
 
         apiService.add(jsonObject).enqueue(object : Callback<AddResponse> {
             override fun onResponse(

@@ -3,6 +3,7 @@ package com.example.myapplication.model
 
 data class RowData(
     val registrationNumber: String,
+    val isActive: String = "inActive",
     val day1: String = "Absent",
     val day2: String = "Absent",
     val day3: String = "Absent",

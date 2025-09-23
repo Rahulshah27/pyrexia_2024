@@ -1,17 +1,12 @@
 package com.example.myapplication.ui.sss
 
-import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequestBuilder
@@ -22,7 +17,6 @@ import com.example.myapplication.databinding.ActivityGenerateQrCodeBulkBinding
 import com.example.myapplication.interfaces.ApiCallback
 import com.example.myapplication.model.AddInBulkResponse
 import com.example.myapplication.model.RowData
-import com.example.myapplication.utils.Constants.STORAGE_PERMISSION_CODE
 import com.example.myapplication.utils.QRCodeWorker
 import com.example.myapplication.utils.saveRegistrationNumbersToFile
 import com.google.gson.Gson
@@ -44,7 +38,7 @@ class GenerateQrInBulkActivity : AppCompatActivity() {
 
     private val startForResult =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            if (result.resultCode == Activity.RESULT_OK) {
+            if (result.resultCode == RESULT_OK) {
                 result.data?.data?.let { uri ->
                     readExcelFile(uri)
                 }
@@ -55,37 +49,17 @@ class GenerateQrInBulkActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_generate_qr_code_bulk)
 
-        askPermission()
         initClick()
     }
 
-    private fun askPermission() {
-        checkStoragePermission()
-    }
-
-    private fun checkStoragePermission() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
-                STORAGE_PERMISSION_CODE)
-        } else {
-            initClick()
-        }
-    }
 
     private fun initClick() {
         binding.btnSelectFile.setOnClickListener {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_GRANTED) {
-                val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
-                    type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-                    addCategory(Intent.CATEGORY_OPENABLE)
-                }
-                startForResult.launch(intent)
-            } else {
-                Toast.makeText(this, "Storage permission is required to select a file", Toast.LENGTH_SHORT).show()
+            val intent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                addCategory(Intent.CATEGORY_OPENABLE)
             }
+            startForResult.launch(intent)
         }
     }
 

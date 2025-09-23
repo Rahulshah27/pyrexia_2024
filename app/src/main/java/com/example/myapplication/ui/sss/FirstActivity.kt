@@ -1,5 +1,6 @@
 package com.example.myapplication.ui.sss
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
@@ -15,14 +16,21 @@ class FirstActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_first)
-        binding.firstActivityGenerateInBulkButton.setOnClickListener {
-            startActivity(GenerateQrInBulkActivity.getGenerateInBulkActivity(this))
-        }
-        binding.firstActivityGenerateButton.setOnClickListener {
+
+        binding.btnGenerateSingleQr.setOnClickListener {
             startActivity(GenerateQrCodeActivity.getGenerateQrCodeActivity(this))
         }
+
+        binding.btnGenerateBulkQr.setOnClickListener {
+            startActivity(GenerateQrInBulkActivity.getGenerateInBulkActivity(this))
+        }
+
         binding.firstActivityScanButton.setOnClickListener {
             startActivity(ScanQrCodeActivity.getScanQrCodeActivity(this))
+        }
+
+        binding.btnGoToAdmin.setOnClickListener {
+            startActivity(Intent( this@FirstActivity, AdminActivity::class.java))
         }
     }
 

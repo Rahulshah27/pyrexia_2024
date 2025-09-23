@@ -44,7 +44,7 @@ vi
 
             <TextView
                 android:id="@+id/txt_msg"
-                style="@style/text14Regular"
+                style="@style/text14Medium"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/_6sdp"

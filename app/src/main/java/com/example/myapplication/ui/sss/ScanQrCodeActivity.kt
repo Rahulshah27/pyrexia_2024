@@ -23,6 +23,7 @@ import com.example.myapplication.databinding.LayoutAlertMessageSheetBinding
 import com.example.myapplication.interfaces.ApiCallback
 import com.example.myapplication.model.ScanResponse
 import com.example.myapplication.utils.Constants
+import com.example.myapplication.utils.Constants.IS_ADMIN_DATA
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.JsonObject
@@ -36,6 +37,7 @@ import retrofit2.Response
 class ScanQrCodeActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     private lateinit var binding: ActivityScanQrCodeBinding
     private var isScanningEnabled = true
+    private var isAdmin = false
 
     companion object {
         private const val MY_CAMERA_REQUEST_CODE = 6515
@@ -46,6 +48,7 @@ class ScanQrCodeActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_scan_qr_code)
+        isAdmin = intent?.getBooleanExtra(IS_ADMIN_DATA, false)?: false
         setScannerProperties()
     }
 
@@ -93,18 +96,11 @@ class ScanQrCodeActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         }
     }
 
-    private fun showLoader() {
-        binding.progressIndicator.visibility = View.VISIBLE
-        binding.progressIndicator.show()
-    }
-
-    private fun hideLoader() {
-        binding.progressIndicator.visibility = View.GONE
-        binding.progressIndicator.hide()
-    }
-
     private fun updateExcel(scannedData: String) {
-        showLoader()
+        if (isAdmin) {
+            setBottomSheetForEntry(scannedData, isAdmin = true)
+            return
+        }
         val currentTimeStamp = System.currentTimeMillis() / 1000
         val day = when (currentTimeStamp) {
             in Constants.DAY_1_START_TIME..Constants.DAY_1_END_TIME -> Constants.DAY_1
@@ -119,7 +115,7 @@ class ScanQrCodeActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         if (day.isBlank()) {
                 Toast.makeText(
                     this@ScanQrCodeActivity,
-                    "Entry will start from 4 PM Onwards!",
+                    "Entry will start from 6 PM Onwards!",
                     Toast.LENGTH_SHORT
                 ).show()
             } else {
@@ -127,7 +123,7 @@ class ScanQrCodeActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
             }
     }
 
-    private fun setBottomSheetForEntry(scannedData: String, day: String) {
+    private fun setBottomSheetForEntry(scannedData: String, day: String?=null, isAdmin: Boolean = false) {
         val dialog = BottomSheetDialog(this@ScanQrCodeActivity, R.style.MyBottomSheetDialogTheme)
         val dialogBinding: LayoutAlertMessageSheetBinding = DataBindingUtil.inflate(
             layoutInflater,
@@ -152,25 +148,69 @@ class ScanQrCodeActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
 
 
         // Call API and handle response...
-        callApi(scannedData, day, object : ApiCallback {
-            override fun onSuccess(response: String) {
-                dialogBinding.txtMsg.text = response
-                hideLoader()
-                dialog.show()
+        if (!isAdmin) {
+            callApi(scannedData, day, object : ApiCallback {
+                override fun onSuccess(response: String) {
+                    dialogBinding.txtMsg.text = response
+                    dialog.show()
+                }
+
+                override fun onFailure(errorMessage: String) {
+                    dialogBinding.txtMsg.text = errorMessage
+                    dialog.show()
+                }
+            })
+        }
+        else {
+            callApiActive(scannedData, object : ApiCallback {
+                override fun onSuccess(response: String) {
+                    dialogBinding.txtMsg.text = response
+                    dialog.show()
+                }
+
+                override fun onFailure(errorMessage: String) {
+                    dialogBinding.txtMsg.text = errorMessage
+                    dialog.show()
+                }
+            })
+        }
+    }
+
+
+    private fun callApiActive(scannedData: String, callback: ApiCallback) {
+        val apiService = RetrofitInstance.apiService
+        val json = JsonObject()
+        json.addProperty("registrationNumber", scannedData)
+
+        apiService.updateActiveStatus(json).enqueue(object : Callback<ScanResponse> {
+            override fun onResponse(call: Call<ScanResponse>, response: Response<ScanResponse>) {
+                if (response.isSuccessful) {
+                    if (response.body()?.status.equals("success")) {
+                        val responseBody = response.body()?.message ?: ""
+                        Log.d("ScanQrCodeActivity", "Response: $responseBody")
+                        callback.onSuccess(responseBody)
+                    } else if (response.body()?.status.equals("error")) {
+                        val responseBody = response.body()?.message ?: ""
+                        Log.d("ScanQrCodeActivity", "Response: $responseBody")
+                        callback.onSuccess("Error: $responseBody!!!!!!!")
+                    }
+                } else {
+                    Log.e("ScanQrCodeActivity", "Error: ${response.code()}")
+                    callback.onFailure("Something went wrong. Please try again.")
+                }
             }
 
-            override fun onFailure(errorMessage: String) {
-                dialogBinding.txtMsg.text = errorMessage
-                hideLoader()
-                dialog.show()
+            override fun onFailure(call: Call<ScanResponse>, t: Throwable) {
+                Log.e("ScanQrCodeActivity", "Error: ${t.message}")
+                callback.onFailure("Something went wrong. Please try again.")
             }
         })
     }
 
-    private fun callApi(scannedData: String, day: String, callback: ApiCallback) {
+    private fun callApi(scannedData: String, day: String?=null, callback: ApiCallback) {
         val apiService = RetrofitInstance.apiService
-
-        val json = JsonObject().apply {
+        val json = JsonObject()
+        json.apply {
             addProperty("action", "update")
             addProperty("registrationNumber", scannedData)
             addProperty("day", day)
@@ -187,7 +227,7 @@ class ScanQrCodeActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
                     } else if (response.body()?.status.equals("error")) {
                         val responseBody = response.body()?.message ?: ""
                         Log.d("ScanQrCodeActivity", "Response: $responseBody")
-                        callback.onSuccess("Error: $responseBody")
+                        callback.onSuccess("Error: $responseBody!!!!!!!")
                     }
                 } else {
                     Log.e("ScanQrCodeActivity", "Error: ${response.code()}")

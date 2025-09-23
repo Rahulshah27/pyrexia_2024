@@ -32,6 +32,8 @@
         android:forceDarkAllowed="false"
         tools:targetApi="31" >
 
+        <activity android:name=".ui.sss.AdminActivity"
+            android:exported="true"/>
         <activity android:name=".ui.sss.GenerateQrInBulkActivity"
             android:exported="true"/>
         <activity android:name=".ui.sss.FirstActivity"

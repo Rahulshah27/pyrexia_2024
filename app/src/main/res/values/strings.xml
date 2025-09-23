@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Pyrexia_2024</string>
+    <string name="app_name">Pyrexia 2025</string>
     <string name="generate_qr_code">Generate Qr Code</string>
     <string name="generate_qr_code_in_bulk">Generate Qr Code in Bulk</string>
     <string name="scan_qr_code">Scan Qr Code</string>
@@ -16,7 +16,10 @@
     <string name="file_provider_name">.fileProvider</string>
     <string name="something_went_wrong">Somthing went wrong!</string>
     <string name="select_file">Select File\n</string>
-    <string name="select_xml_file_to_upload">Select xml file to upload</string>
+    <string name="select_xml_file_to_upload">Select excel file to upload</string>
     <string name="got_it">Got it!</string>
     <string name="scanned">Scanned!</string>
+    <string name="welcome_back_admin_sign_in_to_continue">Welcome back admin — sign in to continue</string>
+    <string name="go_to_admin">Admin Work</string>
+    <string name="welcome_text">Welcome! Choose an option below</string>
 </resources>

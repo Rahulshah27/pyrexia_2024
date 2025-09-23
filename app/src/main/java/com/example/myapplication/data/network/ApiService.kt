@@ -7,7 +7,9 @@ import com.example.myapplication.utils.Constants.ENDPOINT
 import com.google.gson.JsonObject
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.PATCH
 import retrofit2.http.POST
+
 
 interface ApiService {
     @POST(ENDPOINT)
@@ -18,4 +20,7 @@ interface ApiService {
 
     @POST(ENDPOINT)
     fun scan(@Body json: JsonObject): Call<ScanResponse>
+
+    @PATCH(ENDPOINT)
+    fun updateActiveStatus(@Body json: JsonObject): Call<ScanResponse>
 }
