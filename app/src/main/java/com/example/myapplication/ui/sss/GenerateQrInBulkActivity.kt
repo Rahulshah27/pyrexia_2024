@@ -146,7 +146,6 @@ class GenerateQrInBulkActivity : AppCompatActivity() {
             }
 
             override fun onFailure(errorMessage: String) {
-
             }
         })
 

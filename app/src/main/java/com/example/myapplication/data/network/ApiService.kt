@@ -3,24 +3,23 @@ package com.example.myapplication.data.network
 import com.example.myapplication.model.AddInBulkResponse
 import com.example.myapplication.model.AddResponse
 import com.example.myapplication.model.ScanResponse
-import com.example.myapplication.utils.Constants.ENDPOINT
+import com.example.myapplication.utils.Constants.ENDPOINT_TEST
 import com.google.gson.JsonObject
 import retrofit2.Call
 import retrofit2.http.Body
-import retrofit2.http.PATCH
 import retrofit2.http.POST
 
 
 interface ApiService {
-    @POST(ENDPOINT)
+    @POST(ENDPOINT_TEST)
     fun addInBulk(@Body json: JsonObject): Call<AddInBulkResponse>
 
-    @POST(ENDPOINT)
+    @POST(ENDPOINT_TEST)
     fun add(@Body json: JsonObject): Call<AddResponse>
 
-    @POST(ENDPOINT)
+    @POST(ENDPOINT_TEST)
     fun scan(@Body json: JsonObject): Call<ScanResponse>
 
-    @PATCH(ENDPOINT)
+    @POST(ENDPOINT_TEST)
     fun updateActiveStatus(@Body json: JsonObject): Call<ScanResponse>
 }

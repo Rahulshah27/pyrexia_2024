@@ -5,6 +5,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 object RetrofitInstance {
     private const val BASE_URL = "https://script.google.com"
@@ -16,10 +17,13 @@ object RetrofitInstance {
         }
 
         val gson = GsonBuilder()
-            .setLenient()
             .create()
 
+        // ✅ Configure OkHttpClient with timeouts
         val okHttpClient = OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)   // max time to establish connection
+            .readTimeout(60, TimeUnit.SECONDS)     // max time to wait for server response
+            .writeTimeout(30, TimeUnit.SECONDS)    // max time to send request body
             .addInterceptor(logging)
             .build()
 

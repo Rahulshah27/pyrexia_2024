@@ -73,7 +73,7 @@ fun addTextBelowQRCode(
 
 fun saveQRCodeToPyrexiaFolder(bitmap: Bitmap, registrationNumber: String) {
     val downloadsPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
-    val pyrexiaFolder = File(downloadsPath, "Pyrexia_2024")
+    val pyrexiaFolder = File(downloadsPath, "Pyrexia_2025")
 
     // Check if the directory exists; if not, create it
     if (!pyrexiaFolder.exists()) {

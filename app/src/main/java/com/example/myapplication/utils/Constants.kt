@@ -1,10 +1,8 @@
 package com.example.myapplication.utils
 
 object Constants {
-    const val ENDPOINT_TEST = "macros/s/AKfycbx_UEUL8L0em5Qs8mnuKXQOUNLbxdMOHCyTgrlj6MQv8rM9gaBpJ1Cm7tDpnl27zFSz/exec"
-    const val ENDPOINT = "https://script.google.com/macros/s/AKfycbwI_GZMsrp5fOdrjPTN3xNFPgWJ7UCS-WuLszLIqbqbvgfrkgN1zHWNTZqNB80bKS4/exec"
-    const val STORAGE_PERMISSION_CODE = 1001
-
+    const val ENDPOINT = "https://script.google.com/macros/s/AKfycbyJw93OaIBOAWseTYn6BWm9izIh5iI1_0XCo5vwJ7Z0FPo_sPg5nfBHNe4bOhQF_BHWtA/exec"
+    const val ENDPOINT_TEST = "https://script.google.com/macros/s/AKfycbw9VptBoCMJ88l8QZCyCRWcVZgeiRybATRP_EVC_dhHOAkZzRJELQlhgNO6gQwsDIf2og/exec"
     const val DAY_1 = "day1"
     const val DAY_2 = "day2"
     const val DAY_3 = "day3"

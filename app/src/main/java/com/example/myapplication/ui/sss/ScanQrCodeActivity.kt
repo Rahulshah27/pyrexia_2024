@@ -12,7 +12,6 @@ import android.os.VibratorManager
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
@@ -22,7 +21,6 @@ import com.example.myapplication.databinding.ActivityScanQrCodeBinding
 import com.example.myapplication.databinding.LayoutAlertMessageSheetBinding
 import com.example.myapplication.interfaces.ApiCallback
 import com.example.myapplication.model.ScanResponse
-import com.example.myapplication.utils.Constants
 import com.example.myapplication.utils.Constants.IS_ADMIN_DATA
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -87,11 +85,11 @@ class ScanQrCodeActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
 
     private fun vibrate() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val vibratorManager = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+            val vibratorManager = getSystemService(VIBRATOR_MANAGER_SERVICE) as VibratorManager
             val vibrator = vibratorManager.defaultVibrator
             vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
         } else {
-            val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            val vibrator = getSystemService(VIBRATOR_SERVICE) as Vibrator
             vibrator.vibrate(VibrationEffect.createOneShot(500, VibrationEffect.DEFAULT_AMPLITUDE))
         }
     }
@@ -101,7 +99,7 @@ class ScanQrCodeActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
             setBottomSheetForEntry(scannedData, isAdmin = true)
             return
         }
-        val currentTimeStamp = System.currentTimeMillis() / 1000
+        /*val currentTimeStamp = System.currentTimeMillis() / 1000
         val day = when (currentTimeStamp) {
             in Constants.DAY_1_START_TIME..Constants.DAY_1_END_TIME -> Constants.DAY_1
             in Constants.DAY_2_START_TIME..Constants.DAY_2_END_TIME -> Constants.DAY_2
@@ -120,7 +118,8 @@ class ScanQrCodeActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
                 ).show()
             } else {
                 setBottomSheetForEntry(scannedData, day) // Show the dialog
-            }
+            }*/
+        setBottomSheetForEntry(scannedData, "day1")
     }
 
     private fun setBottomSheetForEntry(scannedData: String, day: String?=null, isAdmin: Boolean = false) {
@@ -180,19 +179,18 @@ class ScanQrCodeActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     private fun callApiActive(scannedData: String, callback: ApiCallback) {
         val apiService = RetrofitInstance.apiService
         val json = JsonObject()
-        json.addProperty("registrationNumber", scannedData)
+        json.addProperty("registration_number", scannedData)
+        json.addProperty("action", "qr_activate")
 
         apiService.updateActiveStatus(json).enqueue(object : Callback<ScanResponse> {
             override fun onResponse(call: Call<ScanResponse>, response: Response<ScanResponse>) {
                 if (response.isSuccessful) {
-                    if (response.body()?.status.equals("success")) {
-                        val responseBody = response.body()?.message ?: ""
-                        Log.d("ScanQrCodeActivity", "Response: $responseBody")
-                        callback.onSuccess(responseBody)
-                    } else if (response.body()?.status.equals("error")) {
-                        val responseBody = response.body()?.message ?: ""
-                        Log.d("ScanQrCodeActivity", "Response: $responseBody")
-                        callback.onSuccess("Error: $responseBody!!!!!!!")
+                    val body = response.body()
+                    if (body?.success == true) {
+                        callback.onSuccess(body.message ?: "")
+                    } else {
+                        val errorMsg = body?.message ?: "Unknown error"
+                        callback.onFailure("Error: $errorMsg")
                     }
                 } else {
                     Log.e("ScanQrCodeActivity", "Error: ${response.code()}")
@@ -211,23 +209,20 @@ class ScanQrCodeActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         val apiService = RetrofitInstance.apiService
         val json = JsonObject()
         json.apply {
-            addProperty("action", "update")
-            addProperty("registrationNumber", scannedData)
+            addProperty("action", "day_update")
+            addProperty("registration_number", scannedData)
             addProperty("day", day)
-            addProperty("status", "Present")
         }
 
         apiService.scan(json).enqueue(object : Callback<ScanResponse> {
             override fun onResponse(call: Call<ScanResponse>, response: Response<ScanResponse>) {
                 if (response.isSuccessful) {
-                    if (response.body()?.status.equals("success")) {
-                        val responseBody = response.body()?.message ?: ""
-                        Log.d("ScanQrCodeActivity", "Response: $responseBody")
-                        callback.onSuccess(responseBody)
-                    } else if (response.body()?.status.equals("error")) {
-                        val responseBody = response.body()?.message ?: ""
-                        Log.d("ScanQrCodeActivity", "Response: $responseBody")
-                        callback.onSuccess("Error: $responseBody!!!!!!!")
+                    val body = response.body()
+                    if (body?.success == true) {
+                        callback.onSuccess(body.message ?: "")
+                    } else {
+                        val errorMsg = body?.message ?: "Unknown error"
+                        callback.onFailure("Error: $errorMsg")
                     }
                 } else {
                     Log.e("ScanQrCodeActivity", "Error: ${response.code()}")

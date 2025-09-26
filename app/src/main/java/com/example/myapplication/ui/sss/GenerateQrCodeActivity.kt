@@ -92,13 +92,7 @@ class GenerateQrCodeActivity : AppCompatActivity() {
         val apiService = RetrofitInstance.apiService
         val jsonObject = JsonObject()
         jsonObject.addProperty("action", "add")
-        jsonObject.addProperty("registrationNumber", registrationNumber)
-        jsonObject.addProperty("day1", "Absent")
-        jsonObject.addProperty("day2", "Absent")
-        jsonObject.addProperty("day3", "Absent")
-        jsonObject.addProperty("day4", "Absent")
-        jsonObject.addProperty("day5", "Absent")
-        jsonObject.addProperty("isActive", "inActive")
+        jsonObject.addProperty("registration_number", registrationNumber)
 
         apiService.add(jsonObject).enqueue(object : Callback<AddResponse> {
             override fun onResponse(

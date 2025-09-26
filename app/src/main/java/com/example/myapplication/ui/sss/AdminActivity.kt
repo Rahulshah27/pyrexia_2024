@@ -31,7 +31,9 @@ class AdminActivity : AppCompatActivity() {
 
         // If already logged in, skip login
         if (sharedPreferences?.getBoolean(KEY_LOGGED_IN, false) == true) {
-            startActivity(Intent(this, ScanQrCodeActivity::class.java))
+            startActivity(Intent(this, ScanQrCodeActivity::class.java).apply {
+                putExtra(IS_ADMIN_DATA, true)
+            })
             finish()
             return
         }
