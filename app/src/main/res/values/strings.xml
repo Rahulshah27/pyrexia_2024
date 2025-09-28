@@ -23,4 +23,6 @@
     <string name="go_to_admin">Admin Work</string>
     <string name="welcome_text">Welcome! Choose an option below</string>
     <string name="entry_will_start_from_5_pm_onwards">Entry will start from 5 PM Onwards!</string>
+    <string name="generate_single_qr">Generate Single QR</string>
+    <string name="generate_bulk_qr">Generate Bulk QR</string>
 </resources>
