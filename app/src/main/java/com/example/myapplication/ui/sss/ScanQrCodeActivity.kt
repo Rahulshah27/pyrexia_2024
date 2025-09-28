@@ -12,6 +12,7 @@ import android.os.VibratorManager
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.databinding.DataBindingUtil
@@ -21,6 +22,7 @@ import com.example.myapplication.databinding.ActivityScanQrCodeBinding
 import com.example.myapplication.databinding.LayoutAlertMessageSheetBinding
 import com.example.myapplication.interfaces.ApiCallback
 import com.example.myapplication.model.ScanResponse
+import com.example.myapplication.utils.Constants
 import com.example.myapplication.utils.Constants.IS_ADMIN_DATA
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -46,7 +48,7 @@ class ScanQrCodeActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_scan_qr_code)
-        isAdmin = intent?.getBooleanExtra(IS_ADMIN_DATA, false)?: false
+        isAdmin = intent?.getBooleanExtra(IS_ADMIN_DATA, false) ?: false
         setScannerProperties()
     }
 
@@ -99,7 +101,7 @@ class ScanQrCodeActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
             setBottomSheetForEntry(scannedData, isAdmin = true)
             return
         }
-        /*val currentTimeStamp = System.currentTimeMillis() / 1000
+        val currentTimeStamp = System.currentTimeMillis() / 1000
         val day = when (currentTimeStamp) {
             in Constants.DAY_1_START_TIME..Constants.DAY_1_END_TIME -> Constants.DAY_1
             in Constants.DAY_2_START_TIME..Constants.DAY_2_END_TIME -> Constants.DAY_2
@@ -108,21 +110,22 @@ class ScanQrCodeActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
             in Constants.DAY_5_START_TIME..Constants.DAY_5_END_TIME -> Constants.DAY_5
             else -> ""
         }
-
-
         if (day.isBlank()) {
-                Toast.makeText(
-                    this@ScanQrCodeActivity,
-                    "Entry will start from 6 PM Onwards!",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else {
-                setBottomSheetForEntry(scannedData, day) // Show the dialog
-            }*/
-        setBottomSheetForEntry(scannedData, "day1")
+            Toast.makeText(
+                this@ScanQrCodeActivity,
+                getString(R.string.entry_will_start_from_5_pm_onwards),
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            setBottomSheetForEntry(scannedData, day) // Show the dialog
+        }
     }
 
-    private fun setBottomSheetForEntry(scannedData: String, day: String?=null, isAdmin: Boolean = false) {
+    private fun setBottomSheetForEntry(
+        scannedData: String,
+        day: String? = null,
+        isAdmin: Boolean = false
+    ) {
         val dialog = BottomSheetDialog(this@ScanQrCodeActivity, R.style.MyBottomSheetDialogTheme)
         val dialogBinding: LayoutAlertMessageSheetBinding = DataBindingUtil.inflate(
             layoutInflater,
@@ -132,7 +135,8 @@ class ScanQrCodeActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         )
 
         dialog.setContentView(dialogBinding.root)
-        val bottomSheet = dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+        val bottomSheet =
+            dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
         bottomSheet?.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
 
         val behavior = BottomSheetBehavior.from(bottomSheet as View)
@@ -159,8 +163,7 @@ class ScanQrCodeActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
                     dialog.show()
                 }
             })
-        }
-        else {
+        } else {
             callApiActive(scannedData, object : ApiCallback {
                 override fun onSuccess(response: String) {
                     dialogBinding.txtMsg.text = response
@@ -205,7 +208,7 @@ class ScanQrCodeActivity : AppCompatActivity(), ZXingScannerView.ResultHandler {
         })
     }
 
-    private fun callApi(scannedData: String, day: String?=null, callback: ApiCallback) {
+    private fun callApi(scannedData: String, day: String? = null, callback: ApiCallback) {
         val apiService = RetrofitInstance.apiService
         val json = JsonObject()
         json.apply {

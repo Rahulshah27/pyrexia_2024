@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Pyrexia 2025</string>
+    <string name="app_name">Pyrexia</string>
     <string name="generate_qr_code">Generate Qr Code</string>
     <string name="generate_qr_code_in_bulk">Generate Qr Code in Bulk</string>
     <string name="scan_qr_code">Scan Qr Code</string>
@@ -22,4 +22,5 @@
     <string name="welcome_back_admin_sign_in_to_continue">Welcome back admin — sign in to continue</string>
     <string name="go_to_admin">Admin Work</string>
     <string name="welcome_text">Welcome! Choose an option below</string>
+    <string name="entry_will_start_from_5_pm_onwards">Entry will start from 5 PM Onwards!</string>
 </resources>
